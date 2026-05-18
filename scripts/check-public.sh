@@ -39,4 +39,30 @@ fi
 bash -n "$ROOT/install.sh"
 bash -n "$ROOT/scripts/check-public.sh"
 
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+extract_heredoc() {
+  start_line="$1"
+  source_file="$2"
+  output_file="$3"
+  awk -v start="$start_line" '
+    $0 == start { inside = 1; next }
+    inside && $0 == "EOF" { exit }
+    inside { print }
+  ' "$source_file" > "$output_file"
+}
+
+extract_heredoc '  cat > "$block_file" <<'\''EOF'\''' "$ROOT/install.sh" "$tmp_dir/install-agents-block.md"
+extract_heredoc '  cat > "$fact_file" <<'\''EOF'\''' "$ROOT/install.sh" "$tmp_dir/install-context-pack.md"
+awk '
+  /^```md$/ { inside = 1; next }
+  inside && /^```$/ { exit }
+  inside { print }
+' "$ROOT/skills/context-pack/SKILL.md" > "$tmp_dir/skill-context-pack.md"
+
+cmp -s "$ROOT/templates/AGENTS.context-pack.block.md" "$tmp_dir/install-agents-block.md" || fail "install.sh AGENTS block differs from templates/AGENTS.context-pack.block.md"
+cmp -s "$ROOT/templates/context-pack.md" "$tmp_dir/install-context-pack.md" || fail "install.sh fact map template differs from templates/context-pack.md"
+cmp -s "$ROOT/templates/context-pack.md" "$tmp_dir/skill-context-pack.md" || fail "SKILL.md embedded template differs from templates/context-pack.md"
+
 printf 'check-public passed\n'

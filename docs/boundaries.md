@@ -42,6 +42,22 @@ A Context Pack is a plain local file, so it is easier to inspect, edit, version,
 Do not store project-specific clutter in native memory just because it may be useful later.
 Do not store broad personal preferences in a Context Pack just because a task happened inside that workspace.
 
+## Where Things Belong
+
+| Content type | Put it here |
+|---|---|
+| Cross-project preferences, recurring communication style, broad lessons | Native memory |
+| Workspace goals, stable facts, source pointers, decisions, risks, acceptance rules | Context Pack |
+| Current code, issue state, tests, logs, official docs, current web data | Live source checks |
+| General behavior rules, safety boundaries, when to use Context Packs | Global `AGENTS.md` |
+| Chat transcript, raw logs, temporary task notes, scratch TODOs | Nowhere; store only source pointers if needed |
+
+## Status Values
+
+- `fresh`: the pack itself was recently reviewed; drift-prone facts still need live checks.
+- `stale`: source state, project state, or external facts are likely to have changed.
+- `partial`: the pack exists but key sources, decisions, risks, or acceptance rules are incomplete.
+
 ## What Goes In A Context Pack
 
 Put stable workspace-level facts in the local fact map:

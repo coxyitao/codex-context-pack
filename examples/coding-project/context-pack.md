@@ -4,6 +4,11 @@ Last reviewed: 2026-01-01
 Status: partial
 Context type: code | product
 
+## How To Use
+- Read this pack before resuming feature work or delegating implementation.
+- Re-check the live repository, scripts, and issue state before editing.
+- Update only stable project facts, decisions, risks, or verification rules.
+
 ## Scope
 - Workspace/topic: A local web application project.
 - What this pack covers: stable product goals, technical entry points, local commands, and verification expectations.
@@ -16,19 +21,19 @@ Context type: code | product
 - Key constraints: Do not change authentication, billing, database schema, or deployment settings without explicit approval.
 
 ## Source Of Truth
-- Primary files/URLs/issues: `README.md`, `package.json`, `src/`, `tests/`, issue tracker.
+- Primary files/URLs/issues: `README.md`, `package.json`, `src/`, `tests/`, `docs/auth.md`, issue tracker.
 - Commands to inspect current state: `git status -sb`, `npm test`, `npm run lint`, `npm run build`.
 - What must be re-verified live: dependencies, test status, active branch, open issues, deployment config.
 
 ## Decisions
-- Accepted decisions: Keep this pack short and pointer-based.
-- Rejected options: Do not paste complete logs or chat summaries here.
-- Reasons: The pack should lower context cost, not become another context dump.
+- Accepted decisions: Use the existing auth flow for feature work. Source: `docs/auth.md`. Last checked: 2026-01-01. Reverify: inspect current auth routes before editing.
+- Rejected options: Do not redesign auth as part of unrelated UI or data-flow tasks.
+- Reasons: Auth changes have higher risk and need a separate scope, tests, and review.
 
 ## Operating Notes
 - Important files/folders: `src/`, `tests/`, `docs/`.
 - Useful commands or checks: Use the smallest relevant verification for each change.
-- Tool/plugin/agent routing notes: Use local code and project scripts before external docs unless third-party API behavior is involved.
+- Tool/plugin/agent routing notes: For this workspace, run local scripts before asking another agent to implement. Do not paste general plugin instructions here.
 - Cadence or refresh rule: Update after stable architecture, command, risk, or acceptance-rule changes.
 
 ## Risks And Known Pitfalls
@@ -45,4 +50,4 @@ Context type: code | product
 - Question: Which commands are authoritative for this project?
 - Why it matters: Verification quality depends on the real local toolchain.
 - How to resolve: Inspect project docs and scripts, then update this section.
-
+- Keep only questions that change scope, source of truth, verification, or key decisions.

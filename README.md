@@ -1,6 +1,6 @@
 # Codex Context Pack
 
-Codex Context Pack is a project memory layer for Codex.
+Codex Context Pack is a workspace fact map for Codex.
 
 It is designed for the moment when a Codex task stops being a quick one-off and becomes a real piece of work: a multi-day coding project, a product investigation, an infrastructure fix, a long research thread, or a workflow that keeps coming back across sessions.
 

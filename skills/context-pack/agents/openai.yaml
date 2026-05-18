@@ -1,4 +1,3 @@
 display_name: Context Pack
-short_description: Store durable workspace facts, decisions, risks, and verification pointers for Codex.
-default_prompt: Use the context-pack skill to create, read, or audit a Context Pack for this workspace.
-
+short_description: Maintain local fact maps for long-running Codex work.
+default_prompt: Use the context-pack skill to find any existing Context Pack for this workspace, read it, identify stale facts and live re-verification items, and only create or update one when needed.

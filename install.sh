@@ -100,8 +100,12 @@ write_agents_block_file() {
 
 - Use a Context Pack when a workspace or topic needs durable context across sessions, tools, or agents.
 - Treat the Context Pack as a local fact map: stable facts, source-of-truth pointers, decisions, verification commands, risks, and acceptance rules.
+- Before resuming long-running work, look for `context/context-pack.md`, `docs/codex/context-pack.md`, or `.ai-workflow/context/context-pack.md`.
+- If a long-running workspace has no Context Pack, create one from the installed template instead of putting workspace facts into global rules.
 - Do not use a Context Pack for one-off questions, small edits, raw logs, full chat transcripts, secrets, credentials, or fast-changing facts unless it stores only source links and re-verification rules.
-- When facts conflict, prefer this order: latest user instruction, live source of truth, project rules, Context Pack, long-term memory, prior chat.
+- User instructions decide goals, scope, permissions, and preferences; live sources decide current factual state.
+- For factual conflicts, prefer live source of truth over Context Pack, native memory, and prior chat.
+- For workflow or permission conflicts, prefer latest user instruction and project rules over Context Pack.
 - Before acting on a Context Pack, re-check anything likely to drift: repository state, tests, issues, docs, current web data, tool availability, and local configuration.
 - Keep global rules thin. Put workspace-specific stable facts in the local Context Pack, not in this global file.
 - Update a Context Pack only when reusable facts, decisions, source pointers, commands, risks, or acceptance rules change.
@@ -119,6 +123,19 @@ write_fact_map_file() {
 Last reviewed: YYYY-MM-DD
 Status: fresh | stale | partial
 Context type: code | product | research | ops | finance | travel | personal | workflow | other
+
+Status meanings:
+- fresh: the pack itself was recently reviewed; drift-prone facts still need live checks.
+- stale: source state, project state, or external facts are likely to have changed.
+- partial: the pack exists but key sources, decisions, risks, or acceptance rules are incomplete.
+
+## How To Use
+- Keep this file short, factual, and workspace-specific.
+- Prefer links, file paths, commands, and decisions over pasted logs or chat history.
+- Write important facts as: fact -> source/pointer -> last checked -> reverify rule.
+- At session start, read `Scope`, `Source Of Truth`, `Decisions`, `Risks And Known Pitfalls`, and `Acceptance Rules`.
+- Before acting, re-verify anything listed under `What must be re-verified live`.
+- Update only stable reusable facts; leave transient task notes in the current conversation or task file.
 
 ## Scope
 - Workspace/topic:
@@ -144,7 +161,7 @@ Context type: code | product | research | ops | finance | travel | personal | wo
 ## Operating Notes
 - Important files/folders:
 - Useful commands or checks:
-- Tool/plugin/agent routing notes:
+- Tool/plugin/agent routing notes: workspace-specific exceptions only; do not paste general plugin manuals or personal preferences.
 - Cadence or refresh rule:
 
 ## Risks And Known Pitfalls
@@ -161,20 +178,21 @@ Context type: code | product | research | ops | finance | travel | personal | wo
 - Question:
 - Why it matters:
 - How to resolve:
+- Keep only questions that change scope, source of truth, verification, or key decisions. Do not use this as a task backlog.
 EOF
 }
 
 merge_agents_block() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "[dry-run] merge Context Pack block into $AGENTS_FILE"
+    return
+  fi
+
   mkdir -p "$CODEX_HOME_DIR"
   tmp_dir="$(mktemp -d)"
   block_file="$tmp_dir/agents-block.md"
   merged_file="$tmp_dir/AGENTS.md"
   write_agents_block_file "$block_file"
-
-  if [ "$DRY_RUN" -eq 1 ]; then
-    say "[dry-run] merge Context Pack block into $AGENTS_FILE"
-    return
-  fi
 
   if [ -f "$AGENTS_FILE" ]; then
     cp "$AGENTS_FILE" "$AGENTS_FILE.bak.$(date +%Y%m%d%H%M%S)"
@@ -231,20 +249,19 @@ create_fact_map() {
 }
 
 install_skill() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    say "[dry-run] npx --yes skills add $REPO --global --agent codex --skill context-pack --copy --yes"
+    return
+  fi
+
   if ! command -v npx >/dev/null 2>&1; then
     say "npx is required to install the skill. Install Node.js/npm, then rerun this script." >&2
     exit 1
   fi
 
-  skill_dest="$HOME/.agents/skills/context-pack/SKILL.md"
-  if [ -f "$skill_dest" ]; then
-    say "Skill already installed: $skill_dest"
+  if npx --yes skills ls -g -a codex --json 2>/dev/null | grep -q '"name"[[:space:]]*:[[:space:]]*"context-pack"'; then
+    say "Skill already installed for Codex: context-pack"
     say "Skipping skill installation. Use 'npx skills update -g context-pack' later if you need an update."
-    return
-  fi
-
-  if [ "$DRY_RUN" -eq 1 ]; then
-    say "[dry-run] npx --yes skills add $REPO --global --agent codex --skill context-pack --copy --yes"
     return
   fi
 
@@ -269,4 +286,12 @@ if [ "$CREATE_FACT_MAP" -eq 1 ]; then
   create_fact_map
 fi
 
-say "Done. Restart Codex to pick up newly installed skills."
+if [ "$DRY_RUN" -eq 1 ]; then
+  say "Dry run complete. No files were written."
+else
+  say "Done. Restart Codex to pick up newly installed skills."
+fi
+
+say "Fact map path: $PROJECT_DIR/$FACT_MAP_PATH"
+say "After restarting Codex, try this prompt:"
+say "Use the context-pack skill to read $FACT_MAP_PATH, identify stale facts and live re-verification items, and continue from that context."

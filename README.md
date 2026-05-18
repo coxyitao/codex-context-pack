@@ -40,6 +40,30 @@ Codex Context Pack gives you:
 
 The goal is simple: keep long-running work understandable across sessions without turning global rules into a bloated second brain.
 
+## How It Works With Codex Memory
+
+Codex Context Pack is not trying to replace Codex or ChatGPT's native memory features.
+
+Native memory is best for broad, reusable information that should follow you across conversations: preferences, recurring working style, stable personal or team conventions, and high-level patterns that are useful in many contexts.
+
+A Context Pack is different. It is local to a specific project, workspace, or long-running topic. It should hold the facts Codex needs for that piece of work:
+
+- what this project is trying to achieve
+- where the real source of truth lives
+- what decisions have already been accepted or rejected
+- which commands, tests, docs, or issues should be checked
+- what is stale, risky, or must be re-verified before action
+
+In practice, they work together:
+
+- **Native memory** helps Codex remember how you generally like to work.
+- **Context Pack** helps Codex remember what this specific workspace is doing.
+- **Live verification** still wins when facts may have changed.
+
+This keeps each layer clean. Long-term memory does not get filled with project clutter, and the project fact map does not become a personal profile or chat archive.
+
+It also keeps project context explicit and portable. Native memory is a product-level feature controlled by the user's account and settings. A Context Pack is a plain local file that can be reviewed, edited, committed, copied, or handed to another agent when the project needs that kind of audit trail.
+
 ## Install
 
 Run this from the project or workspace where you want a fact map:

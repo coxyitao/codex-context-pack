@@ -12,6 +12,36 @@ Only stable Context Pack behavior belongs in the global rules block:
 
 Do not put personal preferences, machine paths, project-specific facts, private tooling state, or one workspace's workflow details in the global block.
 
+## Native Memory vs Context Pack
+
+Use native Codex or ChatGPT memory for durable information that is useful across many conversations:
+
+- general working preferences
+- recurring communication style
+- stable personal or team conventions
+- broad lessons that apply across projects
+
+Use a Context Pack for facts that belong to one workspace or long-running topic:
+
+- project goal and scope
+- current state
+- source-of-truth files, docs, issues, or commands
+- accepted and rejected decisions
+- known risks and stale assumptions
+- acceptance rules and verification requirements
+
+The two layers should cooperate:
+
+- Native memory can tell Codex how the user generally works.
+- The Context Pack tells Codex what this workspace currently needs.
+- Live source checks still override both when state may have changed.
+
+Native memory is a product-level feature controlled by account and client settings.
+A Context Pack is a plain local file, so it is easier to inspect, edit, version, share with another agent, or keep inside a repository.
+
+Do not store project-specific clutter in native memory just because it may be useful later.
+Do not store broad personal preferences in a Context Pack just because a task happened inside that workspace.
+
 ## What Goes In A Context Pack
 
 Put stable workspace-level facts in the local fact map:
@@ -41,4 +71,3 @@ Never store:
 
 A Context Pack is useful because it helps Codex know where to look and what decisions have been made.
 It is still below live facts. Repository state, tests, logs, issue state, official docs, and current web data must be re-checked when they can drift.
-

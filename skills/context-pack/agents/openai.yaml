@@ -1,0 +1,4 @@
+display_name: Context Pack
+short_description: Store durable workspace facts, decisions, risks, and verification pointers for Codex.
+default_prompt: Use the context-pack skill to create, read, or audit a Context Pack for this workspace.
+
